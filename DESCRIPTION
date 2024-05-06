@@ -1,8 +1,8 @@
 Package: CvmortalityMult
 Type: Package
 Title: Cross-Validation for Multi-Population Mortality Models
-Version: 0.0.1
-Date: 2024-03-20
+Version: 1.0.1
+Date: 2024-05-06
 Authors@R: c(
   person("David", "Atance", role = c("aut", "cre"),
          email = "david.atance@uah.es", comment =c(ORCID = "0000-0001-5860-0584")),
@@ -23,14 +23,14 @@ LazyLoad: yes
 LazyData: true
 RoxygenNote: 7.2.3
 Depends: R (>= 3.50)
-Imports: StMoMo, forecast, gnm, tmap, sf
+Imports: StMoMo, forecast, gnm, tmap, sf, graphics
 Encoding: UTF-8
 Suggests: testthat (>= 3.0.0)
 Config/testthat/edition: 3
 NeedsCompilation: no
-Packaged: 2024-03-26 19:43:40 UTC; david
+Packaged: 2024-05-06 16:09:10 UTC; david
 Author: David Atance [aut, cre] (<https://orcid.org/0000-0001-5860-0584>),
   Ana Debón [aut] (<https://orcid.org/0000-0002-5116-289X>)
 Maintainer: David Atance <david.atance@uah.es>
 Repository: CRAN
-Date/Publication: 2024-03-27 09:40:05 UTC
+Date/Publication: 2024-05-06 16:30:03 UTC
