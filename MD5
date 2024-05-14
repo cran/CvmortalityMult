@@ -1,4 +1,4 @@
-891d6d273ea38e40a5ef1e9f655a7fda *DESCRIPTION
+7aa498ddccf460dfe7b558ef42e550ed *DESCRIPTION
 c71e07b55141c662e006c83b54ab8630 *LICENSE
 190f6f885229aa650eed02df37083e4f *NAMESPACE
 ae69222b6d83b147725dbf030540d60c *R/MeasureAccuracy.R
@@ -10,7 +10,7 @@ e9f985d6db5b4918dffafacf7aeb7d4d *R/SpainMap.R
 bba167ec3ae2447ea52837178a094569 *R/multipopulation_cv.R
 d6c9ffb32a91ca3b5ab7ae701b3975fb *R/multipopulation_loocv.R
 a3b6248d84d313cb6fd76ea67ebc25de *R/plot.fitLCmulti.R
-e782f32ff0609b98100a29fb799b35a0 *R/plot.forLCmulti.R
+32a3b356e4299cdde32d0a61c82bc186 *R/plot.forLCmulti.R
 9c2cfd5c39039396bc22ee2ed4d4ab05 *R/regions.R
 00d7eeef88dbfe0c2bcaf957cbf3e111 *README.md
 91042bb14a787b72df996c271a682e79 *data/SpainNat.RData
