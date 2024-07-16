@@ -1,12 +1,12 @@
-7aa498ddccf460dfe7b558ef42e550ed *DESCRIPTION
+c96f0c6b56bae75d59ba97dc50c41951 *DESCRIPTION
 c71e07b55141c662e006c83b54ab8630 *LICENSE
 190f6f885229aa650eed02df37083e4f *NAMESPACE
-ae69222b6d83b147725dbf030540d60c *R/MeasureAccuracy.R
+ea7a3e5a67a0a40cf68126751af07b4d *R/MeasureAccuracy.R
 e9f985d6db5b4918dffafacf7aeb7d4d *R/SpainMap.R
 2e58198d78beda3885e6b4be9c60f112 *R/SpainNat.R
 4195718eb4510fc189542a225edc151d *R/SpainRegions.R
 82c4e9ac45996e4c3b9423ee48385980 *R/fitLCmulti.R
-57c65554062a9f23338c65e50ca8973e *R/forecast.fitLCmulti.R
+ece6a6a7167740df25e3c0cb52112a87 *R/forecast.fitLCmulti.R
 bba167ec3ae2447ea52837178a094569 *R/multipopulation_cv.R
 d6c9ffb32a91ca3b5ab7ae701b3975fb *R/multipopulation_loocv.R
 a3b6248d84d313cb6fd76ea67ebc25de *R/plot.fitLCmulti.R
@@ -20,7 +20,7 @@ d1f3162ccab04e714b8b661af52cba63 *data/SpainRegions.rda
 51739b7791a2130eef92a8155eb2e0c8 *data/regions.RData
 1a6d4e21fba1e1cff7e472d8e7a9f882 *data/regions.rda
 2b1263955ad1cb5d9fe5d853afbf5c38 *inst/REFERENCES.bib
-4ecd722092245ce5ecf3612165c34a20 *man/MeasureAccuracy.Rd
+cc3d853658822ef395f31cfffc99b969 *man/MeasureAccuracy.Rd
 e30d95c44c373c69eceaa20883900f2a *man/SpainMap.Rd
 a33818ee0f1f611dfacc4aeeeed8d676 *man/SpainNat.Rd
 3f43a9a92815b8bb4307d02e3a3a7cb4 *man/SpainRegions.Rd
@@ -29,7 +29,7 @@ a33818ee0f1f611dfacc4aeeeed8d676 *man/SpainNat.Rd
 bdcaf7ee84537363524cbd0bbd47d70f *man/figures/LOOCV.PNG
 0d6225bb19d28da96137007c59b0036d *man/figures/LOOCV.jpg
 c051e91578b725b376e32259e1638180 *man/fitLCmulti.Rd
-0e3ee24d4153d895e982c249cbddc1a9 *man/forecast.fitLCmulti.Rd
+188040963d727f2960b98ec511518c54 *man/forecast.fitLCmulti.Rd
 74e54ce07ded211b5dee8a98a58be981 *man/multipopulation_cv.Rd
 405f57cb37897417d42147dbb2f64e42 *man/multipopulation_loocv.Rd
 bf985dc9a7d85c0b4d5f8d0ab22186eb *man/plot.fitLCmulti.Rd
