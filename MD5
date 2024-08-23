@@ -1,11 +1,11 @@
-0bd6d3814680098a1ef4c5fb9869f694 *DESCRIPTION
+93a8819a0d5c79693c6ca4bf42c55243 *DESCRIPTION
 c71e07b55141c662e006c83b54ab8630 *LICENSE
 0f4f20cc13eb40b996224ff91914b1c1 *NAMESPACE
 ea7a3e5a67a0a40cf68126751af07b4d *R/MeasureAccuracy.R
 e9f985d6db5b4918dffafacf7aeb7d4d *R/SpainMap.R
 3da976c25e15afd2d15ba9d39892ef20 *R/SpainNat.R
 78d42a918a0240e2ff6ec9eb06090e25 *R/SpainRegions.R
-072226209ca76adb8562e701564eaef5 *R/fitLCmulti.R
+5ad21a27556645aad63aaec9859a820a *R/fitLCmulti.R
 ece6a6a7167740df25e3c0cb52112a87 *R/forecast.fitLCmulti.R
 bba167ec3ae2447ea52837178a094569 *R/multipopulation_cv.R
 d6c9ffb32a91ca3b5ab7ae701b3975fb *R/multipopulation_loocv.R
