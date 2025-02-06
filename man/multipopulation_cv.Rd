@@ -7,23 +7,25 @@ of multi-population mortality models}
 \usage{
 multipopulation_cv(
   qxt,
-  model = c("additive", "multiplicative"),
+  model = c("additive", "multiplicative", "CFM", "joint-K", "ACFM"),
   periods,
   ages,
   nPop,
   lxt = NULL,
-  nahead,
   ktmethod = c("Arimapdq", "arima010"),
-  kt_include.cte = TRUE,
-  measures = c("SSE", "MSE", "MAE", "MAPE", "All")
+  nahead,
+  trainset1,
+  fixed_train_origin = TRUE,
+  measures = c("SSE", "MSE", "MAE", "MAPE", "All"),
+  ...
 )
 }
 \arguments{
 \item{qxt}{mortality rates used to fit the multi-population mortality models. This rates can be provided in matrix or in data.frame.}
 
-\item{model}{multi-population mortality model chosen to fit the mortality rates c("\code{additive}", "\code{multiplicative}"). In case you do not provide any value, the function will apply the "\code{additive}" option.}
+\item{model}{multi-population mortality model chosen to fit the mortality rates c("\code{additive}", "\code{multiplicative}", "\code{CFM}", "\code{joint-K}", "\code{ACFM}"). In case you do not provide any value, the function will apply the "\code{additive}" option.}
 
-\item{periods}{periods considered in the fitting in a vector way c(\code{minyear}:\code{maxyear}).}
+\item{periods}{number of years considered in the fitting in a vector way c(\code{minyear}:\code{maxyear}).}
 
 \item{ages}{vector with the ages considered in the fitting. If the mortality rates provide from an abridged life tables, it is necessary to provide a vector with the ages, see the example.}
 
@@ -31,13 +33,17 @@ multipopulation_cv(
 
 \item{lxt}{survivor function considered for every population, not necessary to provide.}
 
-\item{nahead}{is a vector specifying the number of periods to block in the blocked CV. The function operates by using the sum of the periods in nahead and three (the minimum number of years required to construct a time series), as the initial training set. This ensures that the first train set has sufficient observations to forecast the initial test set, which will be of length \code{nahead}.}
-
 \item{ktmethod}{method used to forecast the value of \code{kt} Arima(p,d,q) or ARIMA(0,1,0); c("\code{Arimapdq}", "\code{arima010}").}
 
-\item{kt_include.cte}{if you want that \code{kt} include constant in the arima process.}
+\item{nahead}{is a vector specifying the number of periods to forecast \code{nahead} periods ahead. It should be noted that when \code{nahead} is equal to \code{trainset1} a k-fold CV will be applied. Whereas when \code{nahead} is equal to 1, the CV process will be a Leave-One-Out CV.}
+
+\item{trainset1}{is a vector with the periods for the first training set.  This value must be greater than 2 to meet the minimum time series size (Hyndman and Khandakar, 2008).}
+
+\item{fixed_train_origin}{option to select whether the origin in the first train set is fixed or not. The default value is \code{TRUE} where the origin of the first training sets is fixed. The alternatives are: \code{FALSE} when the first train set is moved in every iteration according to the provided \code{nahead} value, and 2. \code{1} when the train set is moved one period ahead in every repetition keeping constant the amount of data, and incorporating the next period observation, and discarding the last available period.}
 
 \item{measures}{choose the non-penalized measure of forecasting accuracy that you want to use; c("\code{SSE}", "\code{MSE}", "\code{MAE}", "\code{MAPE}", "\code{All}"). Check the function. In case you do not provide any value, the function will apply the "\code{SSE}" as measure of forecasting accuracy.}
+
+\item{...}{other arguments for \code{\link[StMoMo:iarima]{iarima}}.}
 }
 \value{
 An object of the class \code{"MultiCv"} including a \code{list()} with different components of the cross-validation process:
@@ -51,56 +57,239 @@ An object of the class \code{"MultiCv"} including a \code{list()} with different
 \item \code{formula} multi-population mortality formula used to fit the mortality rates.
 \item \code{model} provided the model selected in every case.
 \item \code{nPop} provided number of populations to fit the periods.
-\item \code{qxt.real} real mortality rates.
+\item \code{qxt.crude} corresponds to the crude mortality rates. These crude rate are directly obtained by dividing the number of registered deaths by the number of those initially exposed to the risk for age x, period t and in each region i.
 \item \code{qxt.future} future mortality rates estimated with the multi-population mortality model.
 \item \code{logit.qxt.future} future mortality rates in logit way estimated with the multi-population mortality model.
 \item \code{meas_ages} measure of forecasting accuracy through the ages of the study.
 \item \code{meas_periodsfut} measure of forecasting accuracy in every forecasting period(s) of the study.
 \item \code{meas_pop} measure of forecasting accuracy through the populations considered in the study.
 \item \code{meas_total} a global measure of forecasting accuracy through the ages, periods and populations of the study.
+\item \code{warn_msgs } vector with the populations where the model has not converged.
 }
 }
 \description{
-R function for testing the accuracy out-of-sample of different multi-population mortality models, Additive (Debon et al., 2011) and Multiplicative (Russolillo et al., 2011).
-We provide a R function that employ the cross-validation techniques for data panel-time series (Atance et al. 2020) to test the forecasting accuracy.
+R function for testing the accuracy out-of-sample using different cross-validation techniques. The multi-population mortality models used by the package are: additive (Debon et al., 2011), multiplicative (Russolillo et al., 2011), common-factor (CFM) (Carter and Lee, 1992), joint-k (Carter and Lee, 2011), and augmented-common-factor (ACFM) (Li and Lee, 2005).
+We provide a R function that employ the cross-validation techniques for three-way-array, following the preliminary idea for panel-time series, specifically for testing the forecasting ability of single mortality models (Atance et al. 2020).
 These techniques consist on split the database in two parts: training set (to run the model) and test set (to check the forecasting accuracy of the model).
 This procedure is repeated several times trying to check the forecasting accuracy in different ways.
-With this function, the user can provide its own mortality rates for different populations. The function will split the database chronologically (Bergmeir and Benitez, 2012) based on the nahead which consist on the length of the training set.
-We have include the following Figure 1 to understand how the R function works.
-{\figure{CVtechnique.jpg}{options: width="100\%" alt="Figure: mai.png"}}
+With this function, the user can provide its own mortality rates for different populations and apply different cross-validation techniques.
+The user must specify three main inputs in the function (\code{nahead}, \code{trainset1}, and \code{fixed_train_origin}) to apply a specific cross-validation technique between the different options.
+Indeed, you can apply the next time-series cross-validation techniques, following the terminology employed by Bergmeir et al. (2012):
+\enumerate{
+\item Fixed-Origin.
+The technique chronologically splits the data set into two parts, first for training the model, and second for testing the forecasting accuracy.
+This process predicts only once for different forecast horizons which are evaluated to assess the accuracy of the multi-population model, as can be seen in the next Figure.
+{\figure{FIXED-ORIGIN.jpg}{options: width="100\%" alt="Figure: mai.png"}}
+}
+
+The function "\code{multipopulation_cv()}" understands FIXED-ORIGIN when \code{trainset1} + \code{nahead} = number of provided periods and \code{fixed_train_origin} = \code{TRUE} (default value).
+As an example, data set with periods from 1991 to 2020, \code{trainset1} = 25 and \code{nahead}= 5, with a total of 30, equals to length of the periods 1991:2020.
+\enumerate{
+\item Rolling-Origin recalibration (RO-recalibration) evaluation.
+In this technique, the data set is spitted into 'k' sub-sets of data, keeping chronologically order.
+The first set of data corresponds to the training set where the model is fitted and the forecast are evaluated with a fixed horizon.
+In every iteration, the model is enlarged and recalibrated adding the test-set periods (\code{nahead} in the function) to the training set and forecasting the next fixed horizon.
+The idea is to keep the origin fixed and move the forecast origin in every iteration, as can be seen in the next Figure
+}
+
+{\figure{RO_RECALIBRATION.jpg}{options: width="100\%" alt="Figure: mai.png"}}
+
+In the package, to apply this technique the users must provided a value of \code{trainset1} higher than two (to meet with the minimum time-series size), and \code{fixed_train_origin} = \code{TRUE} (default value), independently of the assigned value of \code{nahead}.
+There are different resampling techniques that can be applied based on the values of \code{trainset1} and \code{nahead}.
+Indeed, when \code{nahead} = 1 --- Leave-One-Out-Cross-Validation (LOOCV) with RO-recalibration will be applied.
+Independently, of the number of periods in the first train set (\code{trainset1}).
+When, \code{nahead} and \code{trainset1} are equal --- K-Fold-Cross-Validation (LOOCV) with RO-recalibration will be applied.
+For the rest values of \code{nahead} and \code{trainset1} a standard time-series CV technique will be implemented.
+\enumerate{
+\item Rolling-Window (RW) evaluation
+The approach is very similar to the RO-recalibration, but maintaining the training set size constant at each forecast/iteration.
+Maintaining the chronological order in each forecast, the training set adds the previous. projected periods of the test set and discards the earliest observations, as can be seen in the next Figure.
+}
+
+{\figure{RW_RECALIBRATION}{options: width="100\%" alt="Figure: mai.png"}}
+
+To apply this technique, the \code{multipopulation_cv()} function requires that \code{fixed_train_origin} = c("\code{FALSE}", "\code{1}"), regardless of the values of \code{nahead} and \code{trainset1}.
+Equally as in RO-recalibration, LOOCV, and k-fold can be applied with \code{nahead} = 1, or \code{nahead} equals to \code{trainset1}, respectively, but keeping the training set constant through the iterations.
+Additionally, the common time-series CV approach can be applied for different values of \code{nahead} and \code{trainset1}.
+When \code{fixed_train_origin} = "\code{FALSE}", at each iteration the training set adds the next \code{nahead} periods and discards the oldest keeping the training set size constant.
+While \code{fixed_train_origin} = "\code{1}", at every iteration the training set only incorporates the next period ahead and discards only the latest period; maintaining the length of the training set constant and allowing to assess the forecasting accuracy of the mortality models in the long and medium term with different periods.
+
 It should be mentioned that this function is developed for cross-validation the forecasting accuracy of several populations.
 However, in case you only consider one population, the function will forecast the Lee-Carter model for one population.
-To test the forecasting accuracy of the selected model, the function provides five different measures: SSE, MSE, MAE, MAPE or All. Depending on how you want to check the forecasting accuracy of the model you could select one or other.
+To test the forecasting accuracy of the selected model, the function provides five different measures: SSE, MSE, MAE, MAPE or All.
+This measure of accuracy will be provided in different ways: a total measure, among ages considered, among populations and among projected blocked (periods).
+Depending on how you want to check the forecasting accuracy of the model you could select one or other.
 In this case, the measures will be obtained using the mortality rates in the normal scale as recommended by Santolino (2023) against the log scale.
 }
 \examples{
 
-#The example takes more than 5 seconds because it includes
-#several fitting and forecasting process and hence all
-#the process is included in donttest
+#The example takes more than 5 seconds because they include
+#several cross-validation methods and hence all the processes are included in "donttest".
 \donttest{
-#We present a cross-validation method for spanish male regions
+#We present a cross-validation method for spanish male regions using:
 
 ages <- c(0, 1, 5, 10, 15, 20, 25, 30, 35, 40,
          45, 50, 55, 60, 65, 70, 75, 80, 85, 90)
 library(gnm)
 library(forecast)
-#Let start with a simple nahead=5 CV method obtaining the SSE forecasting measure of accuracy
+library(StMoMo)
+
+#1. FIXED-ORIGIN -- using the ACFM nahead + trainset1 = periods;
+#fixed_train_origin = TRUE (defualt value)
+ho_Spainmales_addit <- multipopulation_cv(qxt = SpainRegions$qx_male,
+                                         model = c("ACFM"),
+                                         periods =  c(1991:2020), ages = c(ages),
+                                         nPop = 18, lxt = SpainRegions$lx_male,
+                                         nahead = 5,
+                                         trainset1 = 25,
+                                         ktmethod = c("Arimapdq"),
+                                         measures = c("SSE"))
+ho_Spainmales_addit
+
+#Once, we have run the function we can check the result in different ways:
+ho_Spainmales_addit$meas_ages
+ho_Spainmales_addit$meas_periodsfut
+ho_Spainmales_addit$meas_pop
+ho_Spainmales_addit$meas_total
+
+#2. Let's continue with a RO-recalibration,
+#(fixed_train_origin = TRUE (defualt value))
+#where we have implemented three main CV techniques:
+#2.1. Leave-One-Out-Cross-Validation (LOOCV) RO-recalibration when nahead = 1;
+#(independently the number of periods blocked for the first train set; trainset1"
+loocv_Spainmales_addit <- multipopulation_cv(qxt = SpainRegions$qx_male,
+                                         model = c("additive"),
+                                         periods =  c(1991:2020), ages = c(ages),
+                                         nPop = 18, lxt = SpainRegions$lx_male,
+                                         nahead = 1, trainset1 = 10,
+                                         ktmethod = c("Arimapdq"),
+                                         measures = c("SSE"))
+loocv_Spainmales_addit
+
+#Once, we have run the function we can check the result in different ways:
+loocv_Spainmales_addit$meas_ages
+loocv_Spainmales_addit$meas_periodsfut
+loocv_Spainmales_addit$meas_pop
+loocv_Spainmales_addit$meas_total
+
+#2.2. K-Fold-CV RO-recalibration when nahead = trainset1
+kfoldcv_Spainmales_addit <- multipopulation_cv(qxt = SpainRegions$qx_male,
+                                         model = c("additive"),
+                                         periods =  c(1991:2020), ages = c(ages),
+                                         nPop = 18, lxt = SpainRegions$lx_male,
+                                         nahead = 5, trainset1 = 5,
+                                         ktmethod = c("Arimapdq"),
+                                         measures = c("SSE"))
+kfoldcv_Spainmales_addit
+
+#Once, we have run the function we can check the result in different ways:
+kfoldcv_Spainmales_addit$meas_ages
+kfoldcv_Spainmales_addit$meas_periodsfut
+kfoldcv_Spainmales_addit$meas_pop
+kfoldcv_Spainmales_addit$meas_total
+
+#2.3. standard time-series CV
 cv_Spainmales_addit <- multipopulation_cv(qxt = SpainRegions$qx_male,
                                          model = c("additive"),
                                          periods =  c(1991:2020), ages = c(ages),
                                          nPop = 18, lxt = SpainRegions$lx_male,
-                                         nahead = 5,
+                                         nahead = 5, trainset1 = 10,
+                                         fixed_train_origin = "TRUE",
                                          ktmethod = c("Arimapdq"),
-                                         kt_include.cte = TRUE,
                                          measures = c("SSE"))
-cv_Spainmales_addit
 
+cv_Spainmales_addit
 #Once, we have run the function we can check the result in different ways:
 cv_Spainmales_addit$meas_ages
 cv_Spainmales_addit$meas_periodsfut
 cv_Spainmales_addit$meas_pop
 cv_Spainmales_addit$meas_total
+
+#3. RW-evaluation (fixed_train_origin = c("FALSE", "1"))
+#3.1. fixed_train_origin == "TRUE" (The default value)
+#In this case, the previous processes (Fixed-Origin or RO-recalibration)
+#3.2. fixed_train_origin == "FALSE"
+#where the origin in the training set is moved "nahead" period ahead in every iteration.
+#This process allows to test the forecasting accuracy of "nahead" periods ahead
+#keeping constant the size of the training and test set. As an example, we present
+#three methods
+#3.2.1. LOOCV
+loocv_Spainmales_addit_rw <- multipopulation_cv(qxt = SpainRegions$qx_male,
+                                         model = c("additive"),
+                                         periods =  c(1991:2020), ages = c(ages),
+                                         nPop = 18, lxt = SpainRegions$lx_male,
+                                         nahead = 1, trainset1 = 10,
+                                         fixed_train_origin = "FALSE",
+                                         ktmethod = c("Arimapdq"),
+                                         measures = c("SSE"))
+
+loocv_Spainmales_addit_rw
+
+#Once, we have run the function we can check the result in different ways:
+loocv_Spainmales_addit_rw$meas_ages
+loocv_Spainmales_addit_rw$meas_periodsfut
+loocv_Spainmales_addit_rw$meas_pop
+loocv_Spainmales_addit_rw$meas_total
+
+#3.2.2. K-Fold-CV
+kfoldcv_Spainmales_addit_rw <- multipopulation_cv(qxt = SpainRegions$qx_male,
+                                         model = c("additive"),
+                                         periods =  c(1991:2020), ages = c(ages),
+                                         nPop = 18, lxt = SpainRegions$lx_male,
+                                         nahead = 5, trainset1 = 5,
+                                         fixed_train_origin = "FALSE",
+                                         ktmethod = c("Arimapdq"),
+                                         measures = c("SSE"))
+
+kfoldcv_Spainmales_addit_rw
+
+#Once, we have run the function we can check the result in different ways:
+kfoldcv_Spainmales_addit$meas_ages
+kfoldcv_Spainmales_addit$meas_periodsfut
+kfoldcv_Spainmales_addit$meas_pop
+kfoldcv_Spainmales_addit$meas_total
+
+#3.2.3. standard time-series CV
+cv_Spainmales_addit_rw <- multipopulation_cv(qxt = SpainRegions$qx_male,
+                                         model = c("additive"),
+                                         periods =  c(1991:2020), ages = c(ages),
+                                         nPop = 18, lxt = SpainRegions$lx_male,
+                                         nahead = 5, trainset1 = 10,
+                                         fixed_train_origin = "FALSE",
+                                         ktmethod = c("Arimapdq"),
+                                         measures = c("SSE"))
+
+cv_Spainmales_addit_rw
+
+#Once, we have run the function we can check the result in different ways:
+cv_Spainmales_addit_rw$meas_ages
+cv_Spainmales_addit_rw$meas_periodsfut
+cv_Spainmales_addit_rw$meas_pop
+cv_Spainmales_addit_rw$meas_total
+
+#3.3  RW-evaluation (fixed_train_origin = c("1"))
+#where the origin in the training set is moved 1 period ahead in every iteration.
+#This process allows to test the forecasting accuracy of "nahead" periods ahead
+#modifying the origin in the training set by 1.
+#When "nahead" = 1 --- we will have a loocv equally as in the previous process,
+#while using a different value of 1 for "nahead" we will test the forecasting
+#accuracy of the model in "nahead" periods:
+cv_Spainmales_addit_rw1 <- multipopulation_cv(qxt = SpainRegions$qx_male,
+                                         model = c("additive"),
+                                         periods =  c(1991:2020), ages = c(ages),
+                                         nPop = 18, lxt = SpainRegions$lx_male,
+                                         nahead = 5, trainset1 = 15,
+                                         fixed_train_origin = "1",
+                                         ktmethod = c("Arimapdq"),
+                                         measures = c("SSE"))
+cv_Spainmales_addit_rw1
+
+#Once, we have run the function we can check the result in different ways:
+cv_Spainmales_addit_rw1$meas_ages
+cv_Spainmales_addit_rw1$meas_periodsfut
+cv_Spainmales_addit_rw1$meas_pop
+cv_Spainmales_addit_rw1$meas_total
+
 }
 }
 \references{
@@ -110,7 +299,11 @@ Mathematics 8(9): 1550.
 
 Bergmeir, C. & Benitez, J.M. (2012)
 On the use of cross-validation for time series predictor evaluation.
-Information Sciences, 191, 192–213.
+Information Sciences, 191, 192–
+
+Carter, L.R. and Lee, R.D. (1992).
+Modeling and forecasting US sex differentials in mortality.
+International Journal of Forecasting, 8(3), 393–411.
 
 Debon, A., & Atance, D. (2022).
 Two multi-population mortality models: A comparison of the forecasting accuracy with resampling methods.
@@ -124,6 +317,10 @@ Lee, R.D. & Carter, L.R. (1992).
 Modeling and forecasting US mortality.
 Journal of the American Statistical Association, 87(419), 659–671.
 
+Li, N. and Lee, R.D. (2005).
+Coherent mortality forecasts for a group of populations: An extension of the Lee-Carter method.
+Demography, 42(3), 575–594.
+
 Russolillo, M., Giordano, G., & Haberman, S. (2011).
 Extending the Lee–Carter model: a three-way decomposition.
 Scandinavian Actuarial Journal, 96-117.
@@ -133,7 +330,6 @@ Should Selection of the Optimum Stochastic Mortality Model Be Based on the Origi
 Risks, 11(10), 170.
 }
 \seealso{
-\code{\link{multipopulation_loocv}},
 \code{\link{fitLCmulti}}, \code{\link{forecast.fitLCmulti}},
 \code{\link{plot.fitLCmulti}}, \code{\link{plot.forLCmulti}},
 \code{\link{MeasureAccuracy}}.

@@ -38,6 +38,7 @@
 #' LC_Spainmales <- fitLCmulti(qxt = SpainNat$qx_male,
 #'                             periods = c(1991:2020),
 #'                             ages = ages,
+#'                             model = "additive",
 #'                             nPop = 1)
 #'
 #' LC_Spainmales
@@ -47,6 +48,6 @@
 print.CVmortalityData <- function(x, ...) {
   cat("Mortality Data\n")
   cat(x$label, "including", x$series ,"\n")
-  cat("Years", c(min(x$years),":", max(x$years)),"\n")
+  cat("Periods", c(min(x$periods),":", max(x$periods)),"\n")
   cat("Abridged Ages", c(min(x$ages),":", max(x$ages)), "\n")
 }
