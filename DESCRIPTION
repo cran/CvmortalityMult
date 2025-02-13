@@ -1,8 +1,8 @@
 Package: CvmortalityMult
 Type: Package
 Title: Cross-Validation for Multi-Population Mortality Models
-Version: 1.0.8
-Date: 2025-02-06
+Version: 1.0.9
+Date: 2025-02-13
 Authors@R: c(
   person("David", "Atance", role = c("aut", "cre"),
          email = "david.atance@uah.es", comment =c(ORCID = "0000-0001-5860-0584")),
@@ -28,9 +28,9 @@ Encoding: UTF-8
 Suggests: testthat (>= 3.0.0)
 Config/testthat/edition: 3
 NeedsCompilation: no
-Packaged: 2025-02-06 10:13:04 UTC; david
+Packaged: 2025-02-13 12:33:58 UTC; david
 Author: David Atance [aut, cre] (<https://orcid.org/0000-0001-5860-0584>),
   Ana Debón [aut] (<https://orcid.org/0000-0002-5116-289X>)
 Maintainer: David Atance <david.atance@uah.es>
 Repository: CRAN
-Date/Publication: 2025-02-06 10:50:07 UTC
+Date/Publication: 2025-02-13 13:22:04 UTC
