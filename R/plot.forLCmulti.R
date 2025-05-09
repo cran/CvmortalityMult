@@ -1,7 +1,7 @@
 #' Function to plot the parameters of the multi-population mortality models
 #' @description
-#' Function to plot different results of the forecasting process of multi-population mortality models, the additive (Debon et al., 2011) and the multiplicative (Russolillo et al., 2011), obtained using the `forecast.fitLCmulti` function which are xs of the `forecastLCmulti` class.
-#' In fact, the function will show the trend parameter kt fitted for the in-sample periods and its forecast results. Similarly, the behavior of the logit mortality rate for the mean in-sample age and the out-of-sample forecast will be shown for all the populations considered.
+#' Function to plot different results of the forecasting process of multi-population mortality models, five different options which are obtained using the `forecast.fitLCmulti()` function.
+#' In fact, the function will show the trend parameters kt fitted for the in-sample periods and its forecast results. Similarly, the behavior of the logit mortality rate for the mean in-sample age and the out-of-sample forecast will be shown for all the populations considered.
 #' It should be mentioned that this function is developed for fitting several populations.
 #' However, in case you only consider one population, the function will show the single population version of the Lee-Carter model, the classical one.
 #'
@@ -15,6 +15,11 @@
 #' \code{\link{multipopulation_cv}}
 #'
 #' @references
+#'
+#' Carter, L.R. and Lee, R.D. (1992).
+#' Modeling and forecasting US sex differentials in mortality.
+#' International Journal of Forecasting, 8(3), 393–411.
+#'
 #' Debon, A., Montes, F., & Martinez-Ruiz, F. (2011).
 #' Statistical methods to compare mortality for a group with non-divergent populations: an application to Spanish regions.
 #' European Actuarial Journal, 1, 291-308.
@@ -23,10 +28,17 @@
 #' Modeling and forecasting US mortality.
 #' Journal of the American Statistical Association, 87(419), 659–671.
 #'
-#' Multi-population mortality model developed by:
+#' Li, N. and Lee, R.D. (2005).
+#' Coherent mortality forecasts for a group of populations: An extension of the Lee-Carter method.
+#' Demography, 42(3), 575–594.
+#'
 #' Russolillo, M., Giordano, G., & Haberman, S. (2011).
 #' Extending the Lee–Carter model: a three-way decomposition.
 #' Scandinavian Actuarial Journal, 2011(2), 96-117.
+#'
+#' Villegas, A. M., Haberman, S., Kaishev, V. K., & Millossovich, P. (2017).
+#' A comparative study of two-population models for the assessment of basis risk in longevity hedges.
+#' ASTIN Bulletin, 47(3), 631-679.
 #'
 #' @importFrom graphics par legend lines mtext
 #' @importFrom utils install.packages
@@ -65,7 +77,7 @@
 #' #Once, we have fit the data, it is possible to forecast the multipopulation
 #' #mortality model several years ahead, for example 10, as follows:
 #' fut_additive_Spainmales <- forecast(object = additive_Spainmales, nahead = 10,
-#'                                     ktmethod = "Arimapdq")
+#'                                     ktmethod = "arimapdq")
 #'
 #' fut_additive_Spainmales
 #' #Once the data have been adjusted, it is possible to display the fitted kt and
@@ -92,7 +104,7 @@
 #' #Once, we have fit the data, it is possible to forecast the multipopulation
 #' #mortality model several years ahead, for example 10, as follows:
 #' fut_multi_Spainmales <- forecast(object = multiplicative_Spainmales, nahead = 10,
-#'                                  ktmethod = "Arimapdq")
+#'                                  ktmethod = "arimapdq")
 #'
 #' fut_multi_Spainmales
 #' #Once the data have been adjusted, it is possible to display the fitted kt and
@@ -117,9 +129,11 @@
 #' plot(cfm_Spainmales)
 #'
 #' #Once, we have fit the data, it is possible to forecast the multipopulation
-#' #mortality model several years ahead, for example 10, as follows:
+#' #mortality model several years ahead, for example 10.
+#' #In this case, we apply another ktmethod = arimauser which implies to specify
+#' #by the user the order of the trend parameters as follows:
 #' fut_cfm_Spainmales <- forecast(object = cfm_Spainmales, nahead = 10,
-#'                                ktmethod = "Arimapdq")
+#'                                ktmethod = "arimauser", order = c(0,1,0))
 #'
 #' fut_cfm_Spainmales
 #' #Once the data have been adjusted, it is possible to display the fitted kt and
@@ -146,7 +160,7 @@
 #' #Once, we have fit the data, it is possible to forecast the multipopulation
 #' #mortality model several years ahead, for example 10, as follows:
 #' fut_acfm_Spainmales <- forecast(object = acfm_Spainmales, nahead = 10,
-#'                                ktmethod = "Arimapdq")
+#'                                ktmethod = "arimapdq")
 #'
 #' fut_acfm_Spainmales
 #' #Once the data have been adjusted, it is possible to display the fitted kt and
@@ -173,7 +187,7 @@
 #' #Once, we have fit the data, it is possible to forecast the multipopulation
 #' #mortality model several years ahead, for example 10, as follows:
 #' fut_jointk_Spainmales <- forecast(object = jointk_Spainmales, nahead = 10,
-#'                                ktmethod = "Arimapdq")
+#'                                ktmethod = "arimapdq")
 #'
 #' fut_jointk_Spainmales
 #' #Once the data have been adjusted, it is possible to display the fitted kt and
@@ -201,7 +215,7 @@
 #' #Once, we have fit the data, it is possible to forecast the multipopulation
 #' #mortality model several years ahead, for example 10, as follows:
 #' fut_LC_Spainmales <- forecast(object = LC_Spainmales, nahead = 10,
-#'                               ktmethod = "Arimapdq")
+#'                               ktmethod = "arimapdq")
 #'
 #' #Once the data have been adjusted, it is possible to display the fitted kt and
 #' #its out-of-sample forecasting. In addition, the function shows
@@ -226,20 +240,31 @@ plot.forLCmulti<- function(x, ...){
   layout(matrix(c(1,2,3,3), ncol = 2, byrow = T),
          heights = c(0.9, 0.1))
   if(x$model == "ACFM"){
-    if(x$ktmethod == "Arimapdq"){
+    if(x$ktmethod == "arimapdq"){
     plot(forecast(auto.arima(x$kt.fitted[,1], ...), h = length(x$FutPeriods)),
          xlab = "periods", ylab = "kt")
     }else if(x$ktmethod == "arima010"){
       plot(forecast(Arima(x$kt.fitted[,1], c(0,1,0), ...), h = length(x$FutPeriods)),
-      xlab = "periods", ylab = "kt", main = "Forecasts from Arima (0,1,0)")
+      xlab = "periods", ylab = "kt", main = "Forecasts from ARIMA (0,1,0)")
+    }else if(x$ktmethod == "arimauser"){
+      kt.prue <- c(x$kt.order[1,1], x$kt.order[1,2], x$kt.order[1,3])
+      title <- paste("Forecast from ARIMA (", paste(kt.prue, collapse = ","), ")")
+      plot(forecast(Arima(x$kt.fitted[,1], x$kt.order[1,], ...), h = length(x$FutPeriods)),
+           xlab = "periods", ylab = "kt", main = title)
     }
   }else{
-    if(x$ktmethod == "Arimapdq"){
+    if(x$ktmethod == "arimapdq"){
       plot(forecast(auto.arima(x$kt.fitted[,1], ...), h = length(x$FutPeriods)),
            xlab = "periods", ylab = "kt")
     }else if(x$ktmethod == "arima010"){
       plot(forecast(Arima(x$kt.fitted[,1], c(0,1,0), ...), h = length(x$FutPeriods)),
-           xlab = "periods", ylab = "kt", main = "Forecasts from Arima (0,1,0)")
+           xlab = "periods", ylab = "kt", main = "Forecasts from ARIMA (0,1,0)")
+    }
+    else if(x$ktmethod == "arimauser"){
+      kt.prue <- c(x$kt.order[1], x$kt.order[2], x$kt.order[3])
+      title <- paste("Forecast from ARIMA (", paste(kt.prue, collapse = ","), ")")
+      plot(forecast(Arima(x$kt.fitted[,1], x$kt.order, ...), h = length(x$FutPeriods)),
+           xlab = "periods", ylab = "kt", main = title)
     }
   }
 
