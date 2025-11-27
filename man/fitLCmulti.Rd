@@ -9,7 +9,7 @@ fitLCmulti(model = c("additive"), qxt, periods, ages, nPop, lxt = NULL)
 \arguments{
 \item{model}{multi-population mortality model chosen to fit the mortality rates c("\code{additive}", "\code{multiplicative}", "\code{CFM}","\code{ACFM}", "\code{joint-K}"). In case you do not provide any value, the function will apply the "\code{additive}" option.}
 
-\item{qxt}{mortality rates used to fit the additive multipopulation mortality model. This rates cn be provided in matrix or in data.frame.}
+\item{qxt}{mortality rates used to fit the additive multipopulation mortality model. These rates can be provided in the matrix or in a data.frame.}
 
 \item{periods}{number of years considered in the fitting in a vector way c(\code{minyear}:\code{maxyear}).}
 

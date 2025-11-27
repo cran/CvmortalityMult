@@ -22,7 +22,7 @@ multipopulation_cv(
 )
 }
 \arguments{
-\item{qxt}{mortality rates used to fit the multi-population mortality models. This rates can be provided in matrix or in data.frame.}
+\item{qxt}{mortality rates used to fit the multi-population mortality models. These rates can be provided in the matrix or in a data.frame.}
 
 \item{model}{multi-population mortality model chosen to fit the mortality rates c("\code{additive}", "\code{multiplicative}", "\code{CFM}", "\code{joint-K}", "\code{ACFM}"). In case you do not provide any value, the function will apply the "\code{additive}" option.}
 
@@ -84,7 +84,8 @@ Indeed, you can apply the next time-series cross-validation techniques, followin
 \item Fixed-Origin.
 The technique chronologically splits the data set into two parts, first for training the model, and second for testing the forecasting accuracy.
 This process predicts only once for different forecast horizons which are evaluated to assess the accuracy of the multi-population model, as can be seen in the next Figure.
-{\figure{FIXED-ORIGIN.jpg}{options: width="100\%" alt="Figure: mai.png"}}
+\if{html}{\figure{FIXED-ORIGIN.jpg}{options: width=500 height=200 alt="Figure: FIXED-ORIGIN.jpg"}}
+\if{latex}{\figure{FIXED-ORIGIN.jpg}{options: width=7cm}}
 }
 
 The function \code{multipopulation_cv()} understands FIXED-ORIGIN when \code{trainset1} + \code{nahead} = number of provided periods and \code{fixed_train_origin} = \code{TRUE} (default value).
@@ -97,7 +98,8 @@ In every iteration, the model is enlarged and recalibrated adding the test-set p
 The idea is to keep the origin fixed and move the forecast origin in every iteration, as can be seen in the next Figure
 }
 
-{\figure{RO_RECALIBRATION.jpg}{options: width="100\%" alt="Figure: mai.png"}}
+\if{html}{\figure{RO_RECALIBRATION.jpg}{options: width=500 height=200 alt="Figure: RO_RECALIBRATION.jpg"}}
+\if{latex}{\figure{RO_RECALIBRATION.jpg}{options: width=7cm}}
 
 In the package, to apply this technique the users must provided a value of \code{trainset1} higher than two (to meet with the minimum time-series size), and \code{fixed_train_origin} = \code{TRUE} (default value), independently of the assigned value of \code{nahead}.
 There are different resampling techniques that can be applied based on the values of \code{trainset1} and \code{nahead}.
@@ -111,7 +113,8 @@ The approach is very similar to the RO-recalibration, but maintaining the traini
 Maintaining the chronological order in each forecast, the training set adds the previous. projected periods of the test set and discards the earliest observations, as can be seen in the next Figure.
 }
 
-{\figure{RW_RECALIBRATION.jpg}{options: width="100\%" alt="Figure: mai.png"}}
+\if{html}{\figure{RW_RECALIBRATION.jpg}{options: width=500 height=200 alt="Figure: RW_RECALIBRATION.jpg"}}
+\if{latex}{\figure{RW_RECALIBRATION.jpg}{options: width=7cm}}
 
 To apply this technique, the \code{multipopulation_cv()} function requires that \code{fixed_train_origin} = c(\code{FALSE}, "\code{add_remove1}"), regardless of the values of \code{nahead} and \code{trainset1}.
 Equally as in RO-recalibration, LOOCV, and k-fold can be applied with \code{nahead} = 1, or \code{nahead} equals to \code{trainset1}, respectively, but keeping the training set constant through the iterations.

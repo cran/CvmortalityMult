@@ -12,7 +12,8 @@
 #' 1. Fixed-Origin.
 #' The technique chronologically splits the data set into two parts, first for training the model, and second for testing the forecasting accuracy.
 #' This process predicts only once for different forecast horizons which are evaluated to assess the accuracy of the multi-population model, as can be seen in the next Figure.
-#' {\figure{FIXED-ORIGIN.jpg}{options: width="100\%" alt="Figure: mai.png"}}
+#' \if{html}{\figure{FIXED-ORIGIN.jpg}{options: width=500 height=200 alt="Figure: FIXED-ORIGIN.jpg"}}
+#' \if{latex}{\figure{FIXED-ORIGIN.jpg}{options: width=7cm}}
 #'
 #' The function `multipopulation_cv()` understands FIXED-ORIGIN when `trainset1` + `nahead` = number of provided periods and `fixed_train_origin` = `TRUE` (default value).
 #' As an example, data set with periods from 1991 to 2020, `trainset1` = 25 and `nahead`= 5, with a total of 30, equals to length of the periods 1991:2020.
@@ -23,7 +24,8 @@
 #' In every iteration, the model is enlarged and recalibrated adding the test-set periods (`nahead` in the function) to the training set and forecasting the next fixed horizon.
 #' The idea is to keep the origin fixed and move the forecast origin in every iteration, as can be seen in the next Figure
 #'
-#' {\figure{RO_RECALIBRATION.jpg}{options: width="100\%" alt="Figure: mai.png"}}
+#' \if{html}{\figure{RO_RECALIBRATION.jpg}{options: width=500 height=200 alt="Figure: RO_RECALIBRATION.jpg"}}
+#' \if{latex}{\figure{RO_RECALIBRATION.jpg}{options: width=7cm}}
 #'
 #' In the package, to apply this technique the users must provided a value of `trainset1` higher than two (to meet with the minimum time-series size), and `fixed_train_origin` = `TRUE` (default value), independently of the assigned value of `nahead`.
 #' There are different resampling techniques that can be applied based on the values of `trainset1` and `nahead`.
@@ -36,7 +38,8 @@
 #' The approach is very similar to the RO-recalibration, but maintaining the training set size constant at each forecast/iteration.
 #' Maintaining the chronological order in each forecast, the training set adds the previous. projected periods of the test set and discards the earliest observations, as can be seen in the next Figure.
 #'
-#' {\figure{RW_RECALIBRATION.jpg}{options: width="100\%" alt="Figure: mai.png"}}
+#' \if{html}{\figure{RW_RECALIBRATION.jpg}{options: width=500 height=200 alt="Figure: RW_RECALIBRATION.jpg"}}
+#' \if{latex}{\figure{RW_RECALIBRATION.jpg}{options: width=7cm}}
 #'
 #' To apply this technique, the `multipopulation_cv()` function requires that `fixed_train_origin` = c(`FALSE`, "`add_remove1`"), regardless of the values of `nahead` and `trainset1`.
 #' Equally as in RO-recalibration, LOOCV, and k-fold can be applied with `nahead` = 1, or `nahead` equals to `trainset1`, respectively, but keeping the training set constant through the iterations.
@@ -51,7 +54,7 @@
 #' Depending on how you want to check the forecasting accuracy of the model you could select one or other.
 #' In this case, the measures will be obtained using the mortality rates in the normal scale as recommended by Santolino (2023) against the log scale.
 #'
-#' @param qxt mortality rates used to fit the multi-population mortality models. This rates can be provided in matrix or in data.frame.
+#' @param qxt mortality rates used to fit the multi-population mortality models. These rates can be provided in the matrix or in a data.frame.
 #' @param model multi-population mortality model chosen to fit the mortality rates c("`additive`", "`multiplicative`", "`CFM`", "`joint-K`", "`ACFM`"). In case you do not provide any value, the function will apply the "`additive`" option.
 #' @param periods number of years considered in the fitting in a vector way c(`minyear`:`maxyear`).
 #' @param ages vector with the ages considered in the fitting. If the mortality rates provide from an abridged life tables, it is necessary to provide a vector with the ages, see the example.

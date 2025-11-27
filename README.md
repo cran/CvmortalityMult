@@ -21,3 +21,5 @@ https://CRAN.R-project.org/package=CvmortalityMult
 
 If you are interested in the package feel free to email david.atance@uah.es or track development at http://github.com/davidAtance/CvmortalityMult
 
+The paper related to the CvmortalityMult package can be found at:
+https://journal.r-project.org/articles/RJ-2025-018/ 

@@ -7,7 +7,7 @@
 #' However, in case you only consider one population, the function will fit the single population version of the Lee-Carter model, the classical one.
 #'
 #' @param model multi-population mortality model chosen to fit the mortality rates c("`additive`", "`multiplicative`", "`CFM`","`ACFM`", "`joint-K`"). In case you do not provide any value, the function will apply the "`additive`" option.
-#' @param qxt mortality rates used to fit the additive multipopulation mortality model. This rates cn be provided in matrix or in data.frame.
+#' @param qxt mortality rates used to fit the additive multipopulation mortality model. These rates can be provided in the matrix or in a data.frame.
 #' @param periods number of years considered in the fitting in a vector way c(`minyear`:`maxyear`).
 #' @param ages vector with the ages considered in the fitting. If the mortality rates provide from an abridged life tables, it is necessary to provide a vector with the ages, see the example.
 #' @param nPop number of population considered for fitting. If you consider 1 the model selected will be the singel version of the Lee-Carter model.
